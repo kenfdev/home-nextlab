@@ -56,7 +56,8 @@ func Handle(req []byte, wg *sync.WaitGroup) string {
 	}
 
 	body, _ := json.Marshal(event.Data.Body)
-	eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionVerifyToken(&slackevents.TokenComparator{string(verifyToken)}))
+	fmt.Printf("body: %s", string(body))
+	eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionVerifyToken(&slackevents.TokenComparator{VerificationToken: string(verifyToken)}))
 	if e != nil {
 		panic(e)
 	}
