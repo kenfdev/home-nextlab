@@ -2,6 +2,7 @@
 
 const fs = require('fs');
 const { WebClient } = require('@slack/client');
+const request = require('request');
 
 module.exports = (context, callback) => {
   callback(undefined, {
@@ -20,9 +21,12 @@ module.exports = (context, callback) => {
     data: { body }
   } = JSON.parse(context);
 
-  if (data.headers["X-Slack-Retry-Num"] && data.headers["X-Slack-Retry-Reason"] === "http_timeout") {
-      // Do nothing if it's a retry.
-      return;
+  if (
+    data.headers['X-Slack-Retry-Num'] &&
+    data.headers['X-Slack-Retry-Reason'] === 'http_timeout'
+  ) {
+    // Do nothing if it's a retry.
+    return;
   }
 
   if (body.token !== verifyToken) {
@@ -36,12 +40,21 @@ module.exports = (context, callback) => {
     // return;
   }
 
-  const web = new WebClient(oAuthToken);
-  web.chat
-    .postMessage({ channel: body.event.channel, text: 'Hello there' })
-    .then(res => {
-      // `res` contains information about the posted message
-      console.error('Message sent: ', res.ts);
-    })
-    .catch(console.error);
+  const url = process.env.GOOGLE_HOME_NOTIFIER_FUNC_URL;
+  request.post(url, { text: body.event.text, language: 'ja' }, (err, resp) => {
+    let msg = 'success';
+    if (err) {
+      msg = 'Error sending message.';
+      return;
+    }
+
+    const web = new WebClient(oAuthToken);
+    web.chat
+      .postMessage({ channel: body.event.channel, text: msg })
+      .then(res => {
+        // `res` contains information about the posted message
+        console.error('Message sent: ', res.ts);
+      })
+      .catch(console.error);
+  });
 };
