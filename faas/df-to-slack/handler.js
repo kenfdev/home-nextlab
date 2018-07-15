@@ -4,23 +4,27 @@ const fs = require('fs');
 const { WebClient } = require('@slack/client');
 
 module.exports = (context, callback) => {
-  callback(undefined, {
-    body: {
-      payload: {
-        google: {
-          expectUserResponse: false,
-          richResponse: {
-            items: [
-              {
-                simpleResponse: {
-                  textToSpeech: '受け付けました'
-                }
+  const response = {
+    payload: {
+      google: {
+        expectUserResponse: false,
+        richResponse: {
+          items: [
+            {
+              simpleResponse: {
+                textToSpeech: '受け付けました'
               }
-            ]
-          }
+            }
+          ]
         }
       }
     }
+  };
+  callback(undefined, {
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(response)
   });
   const oAuthToken = fs
     .readFileSync(`/run/secrets/bot-user-oauth-access-token`)
