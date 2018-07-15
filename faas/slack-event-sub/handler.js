@@ -39,9 +39,10 @@ module.exports = (context, callback) => {
     // return;
   }
 
+  const text = body.event.text.replace('\u003c@U9A82LR52\u003e ', '');
+
   const url = process.env.GOOGLE_HOME_NOTIFIER_FUNC_URL;
-  const payload = { text: body.event.text, language: 'ja' };
-  console.error('payload:', payload);
+  const payload = { text, language: 'ja' };
   request.post(url, { json: payload }, (err, resp) => {
     let msg = 'success';
     if (err) {
