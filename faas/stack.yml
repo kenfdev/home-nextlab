@@ -1,0 +1,9 @@
+provider:
+  name: faas
+  gateway: http://127.0.0.1:8080
+
+functions:
+  slack-echo:
+    lang: go-wg-armhf
+    handler: ./slack-echo
+    image: kenfdev/home-nextlab:slack-echo-0.1.0

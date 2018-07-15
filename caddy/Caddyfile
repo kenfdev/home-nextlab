@@ -1,0 +1,24 @@
+faas.nextlab.tk {
+    status 200 /healthz
+    basicauth /system {$ADMIN_USER} {$ADMIN_PASSWORD}
+    basicauth /function {$ADMIN_USER} {$ADMIN_PASSWORD}
+    basicauth /ui {$ADMIN_USER} {$ADMIN_PASSWORD}
+    proxy / gateway:8080 {
+            transparent
+    }
+
+    errors stderr
+    tls kenfdev@gmail.com
+}
+
+egw.nextlab.tk {
+    status 200 /healthz
+    basicauth / {$ADMIN_USER} {$ADMIN_PASSWORD}
+    proxy / event-gateway:4000 {
+            transparent
+    }
+
+    errors stderr
+    tls kenfdev@gmail.com
+}
+
