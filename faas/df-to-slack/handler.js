@@ -2,7 +2,6 @@
 
 const fs = require('fs');
 const { WebClient } = require('@slack/client');
-const request = require('request');
 
 module.exports = (context, callback) => {
   const oAuthToken = fs
