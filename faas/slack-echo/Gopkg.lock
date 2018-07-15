@@ -2,24 +2,23 @@
 
 
 [[projects]]
-  digest = "1:43dd08a10854b2056e615d1b1d22ac94559d822e1f8b6fcc92c1a1057e85188e"
   name = "github.com/gorilla/websocket"
   packages = ["."]
-  pruneopts = "UT"
   revision = "ea4d1f681babbce9545c9c5f3d5194a789c89f5b"
   version = "v1.2.0"
 
 [[projects]]
-  digest = "1:20de7c621165002b38aa0378d26e4ad0470cf2c8ecc4934f7df50d19d6c0dab0"
+  branch = "master"
   name = "github.com/nlopes/slack"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "8ab4d0b364ef1e9af5d102531da20d5ec902b6c4"
-  version = "v0.2.0"
+  packages = [
+    ".",
+    "slackevents"
+  ]
+  revision = "8ac1139f0b5b26ddb4a5c05b727e7ce155cc37f4"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  input-imports = ["github.com/nlopes/slack"]
+  inputs-digest = "7532af7f46f7a58251bc506e2eceb4c4291e581170bd39db210fc1803d37ae54"
   solver-name = "gps-cdcl"
   solver-version = 1
