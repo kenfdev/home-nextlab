@@ -11,3 +11,4 @@ functions:
       write_debug: true
     secrets:
       - bot-user-oauth-access-token
+      - slack-verify-token

@@ -43,8 +43,9 @@ type HTTPRequestEvent struct {
 
 // Handle a serverless request
 func Handle(req []byte, wg *sync.WaitGroup) string {
-	token, _ := getAPISecret("bot-user-oauth-access-token")
-	var api = slack.New(string(token))
+	oauthToken, _ := getAPISecret("bot-user-oauth-access-token")
+	verifyToken, _ := getAPISecret("slack-verify-token")
+	var api = slack.New(string(oauthToken))
 
 	var event CloudEvent
 	err := json.Unmarshal(req, &event)
@@ -53,7 +54,7 @@ func Handle(req []byte, wg *sync.WaitGroup) string {
 	}
 
 	body, _ := json.Marshal(event.Data.Body)
-	eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionVerifyToken(&slackevents.TokenComparator{string(token)}))
+	eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionVerifyToken(&slackevents.TokenComparator{string(verifyToken)}))
 	if e != nil {
 		panic(e)
 	}
