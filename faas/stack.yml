@@ -3,6 +3,12 @@ provider:
   gateway: http://127.0.0.1:8080
 
 functions:
+  google-home-notifier:
+    lang: go-wg-armhf
+    handler: ./google-home-notifier
+    image: google-home-notifier
+    environment:
+      write_debug: true
   slack-event-sub:
     lang: go-wg-armhf
     handler: ./slack-event-sub
