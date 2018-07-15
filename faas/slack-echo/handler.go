@@ -58,6 +58,7 @@ func Handle(req []byte, wg *sync.WaitGroup) string {
 
 		defer wg.Done()
 
+		fmt.Printf("body: %+v\n", event.Data.Body)
 		eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage([]byte(event.Data.Body)), slackevents.OptionVerifyToken(&slackevents.TokenComparator{string(token)}))
 		fmt.Printf("eventsAPIEvent: %+v\n", eventsAPIEvent)
 		if e != nil {
