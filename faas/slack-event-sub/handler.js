@@ -1,5 +1,6 @@
 'use strict';
 
+const fs = require('fs');
 const { WebClient } = require('@slack/client');
 
 module.exports = (context, callback) => {
