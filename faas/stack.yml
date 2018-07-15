@@ -12,7 +12,7 @@ functions:
       combine_output: false
       GOOGLE_HOME_HOST: 192.168.100.4
   slack-event-sub:
-    lang: go-wg-armhf
+    lang: node-armhf
     handler: ./slack-event-sub
     image: kenfdev/home-nextlab:slack-event-sub-0.1.0
     environment:
