@@ -4,6 +4,24 @@ const fs = require('fs');
 const { WebClient } = require('@slack/client');
 
 module.exports = (context, callback) => {
+  callback(undefined, {
+    body: {
+      payload: {
+        google: {
+          expectUserResponse: false,
+          richResponse: {
+            items: [
+              {
+                simpleResponse: {
+                  textToSpeech: '受け付けました'
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  });
   const oAuthToken = fs
     .readFileSync(`/run/secrets/bot-user-oauth-access-token`)
     .toString();
@@ -19,45 +37,8 @@ module.exports = (context, callback) => {
     .then(res => {
       // `res` contains information about the posted message
       console.error('Message sent: ', res.ts);
-
-      callback(undefined, {
-        body: {
-          payload: {
-            google: {
-              expectUserResponse: false,
-              richResponse: {
-                items: [
-                  {
-                    simpleResponse: {
-                      textToSpeech: '送りました'
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        }
-      });
     })
     .catch(err => {
       console.error(err);
-      callback(undefined, {
-        body: {
-          payload: {
-            google: {
-              expectUserResponse: false,
-              richResponse: {
-                items: [
-                  {
-                    simpleResponse: {
-                      textToSpeech: '送信に失敗しました'
-                    }
-                  }
-                ]
-              }
-            }
-          }
-        }
-      });
     });
 };
