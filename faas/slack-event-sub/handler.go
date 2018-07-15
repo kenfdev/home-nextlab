@@ -32,13 +32,13 @@ type CloudEvent struct {
 }
 
 type HTTPRequestEvent struct {
-	Path    string            `json:"path"`
-	Method  string            `json:"method"`
-	Headers map[string]string `json:"headers"`
-	Host    string            `json:"host"`
-	Query   map[string]string `json:"query"`
-	Params  map[string]string `json:"params"`
-	Body    map[string]string `json:"body"`
+	Path    string                 `json:"path"`
+	Method  string                 `json:"method"`
+	Headers map[string]string      `json:"headers"`
+	Host    string                 `json:"host"`
+	Query   map[string]string      `json:"query"`
+	Params  map[string]string      `json:"params"`
+	Body    map[string]interface{} `json:"body"`
 }
 
 // Handle a serverless request
@@ -74,6 +74,7 @@ func Handle(req []byte, wg *sync.WaitGroup) string {
 
 		defer wg.Done()
 
+		fmt.Printf("eventAPIEvent: %+v\n", eventsAPIEvent)
 		if eventsAPIEvent.Type == slackevents.CallbackEvent {
 			postParams := slack.PostMessageParameters{}
 			innerEvent := eventsAPIEvent.InnerEvent
