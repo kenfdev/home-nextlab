@@ -4,10 +4,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/url"
 	"sync"
 
 	"github.com/nlopes/slack"
-	"github.com/nlopes/slack/slackevents"
 )
 
 func getAPISecret(secretName string) (secretBytes []byte, err error) {
@@ -41,6 +41,27 @@ type HTTPRequestEvent struct {
 	Body    string            `json:"body"`
 }
 
+func SlashCommandParse(str string) (sc slack.SlashCommand, err error) {
+	vals, err := url.ParseQuery(str)
+	if err != nil {
+		return sc, err
+	}
+	sc.Token = vals.Get("token")
+	sc.TeamID = vals.Get("team_id")
+	sc.TeamDomain = vals.Get("team_domain")
+	sc.EnterpriseID = vals.Get("enterprise_id")
+	sc.EnterpriseName = vals.Get("enterprise_name")
+	sc.ChannelID = vals.Get("channel_id")
+	sc.ChannelName = vals.Get("channel_name")
+	sc.UserID = vals.Get("user_id")
+	sc.UserName = vals.Get("user_name")
+	sc.Command = vals.Get("command")
+	sc.Text = vals.Get("text")
+	sc.ResponseURL = vals.Get("response_url")
+	sc.TriggerID = vals.Get("trigger_id")
+	return sc, nil
+}
+
 // Handle a serverless request
 func Handle(req []byte, wg *sync.WaitGroup) string {
 	var event CloudEvent
@@ -49,40 +70,43 @@ func Handle(req []byte, wg *sync.WaitGroup) string {
 		panic(err)
 	}
 
-	token, _ := getAPISecret("bot-user-oauth-access-token")
-
-	api := slack.New(string(token))
+	// token, _ := getAPISecret("bot-user-oauth-access-token")
 
 	wg.Add(1)
 	go func() {
 
 		defer wg.Done()
 
-		fmt.Printf("body: %+v\n", event.Data.Body)
-		eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage([]byte(event.Data.Body)), slackevents.OptionVerifyToken(&slackevents.TokenComparator{string(token)}))
-		fmt.Printf("eventsAPIEvent: %+v\n", eventsAPIEvent)
-		if e != nil {
-			// w.WriteHeader(http.StatusInternalServerError)
+		s, err := SlashCommandParse(event.Data.Body)
+		if err != nil {
+			panic(err)
 		}
 
-		if eventsAPIEvent.Type == slackevents.URLVerification {
-			var r *slackevents.ChallengeResponse
-			err := json.Unmarshal([]byte(req), &r)
-			if err != nil {
-				// w.WriteHeader(http.StatusInternalServerError)
-			}
-			// w.Header().Set("Content-Type", "text")
-			// w.Write([]byte(r.Challenge))
-		}
-		if eventsAPIEvent.Type == slackevents.CallbackEvent {
-			postParams := slack.PostMessageParameters{}
-			innerEvent := eventsAPIEvent.InnerEvent
-			switch ev := innerEvent.Data.(type) {
-			case *slackevents.AppMentionEvent:
-				api.PostMessage(ev.Channel, "Yes, hello.", postParams)
-			}
-		}
+		// if !s.ValidateToken(verificationToken) {
+		// 	panic()
+		// }
+
+		fmt.Printf("SlashCommand: %+v\n", s)
+		// switch s.Command {
+		// case "/echo":
+		// 	params := &slack.Msg{Text: s.Text}
+		// 	b, err := json.Marshal(params)
+		// 	if err != nil {
+		// 		w.WriteHeader(http.StatusInternalServerError)
+		// 		return
+		// 	}
+		// 	w.Header().Set("Content-Type", "application/json")
+		// 	w.Write(b)
+		// default:
+		// 	w.WriteHeader(http.StatusInternalServerError)
+		// 	return
+		// }
+		// if e != nil {
+		// w.WriteHeader(http.StatusInternalServerError)
+		// }
 
 	}()
-	return fmt.Sprintf("Hello, Go. You said: %s", string(req))
+	params := &slack.Msg{Text: "Hi"}
+	b, _ := json.Marshal(params)
+	return string(b)
 }
