@@ -85,7 +85,5 @@ func Handle(req []byte, wg *sync.WaitGroup) string {
 		}
 
 	}()
-	params := &slack.Msg{Text: "Hi"}
-	b, _ := json.Marshal(params)
-	return string(b)
+	return `{"headers": {"Content-Type": "text/plain"}, "body": "success"}`
 }
