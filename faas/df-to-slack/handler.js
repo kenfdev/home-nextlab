@@ -9,7 +9,7 @@ module.exports = (context, callback) => {
     .toString();
 
   const { data } = JSON.parse(context);
-  const body = Buffer.from(data.body, 'base64');
+  const body = JSON.parse(Buffer.from(data.body, 'base64'));
   console.error('body', body);
 
   const query = body.queryResult.queryText;
