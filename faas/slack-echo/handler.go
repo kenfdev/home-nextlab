@@ -21,8 +21,24 @@ func getAPISecret(secretName string) (secretBytes []byte, err error) {
 	return secretBytes, err
 }
 
+type CloudEvent struct {
+	EventType          string `json:"eventType"`
+	EventID            string `json:"eventID"`
+	CloudEventsVersion string `json:"cloudEventsVersion"`
+	Source             string `json:"source"`
+	EventTime          string `json:"eventTime"`
+	Data               string `json:"data"`
+	ContentType        string `json:"contentType"`
+}
+
 // Handle a serverless request
 func Handle(req []byte, wg *sync.WaitGroup) string {
+	var event CloudEvent
+	err := json.Unmarshal(req, &event)
+	if err != nil {
+		panic(err)
+	}
+
 	token, _ := getAPISecret("bot-user-oauth-access-token")
 
 	api := slack.New(string(token))
@@ -31,7 +47,8 @@ func Handle(req []byte, wg *sync.WaitGroup) string {
 	go func() {
 
 		defer wg.Done()
-		eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage(req), slackevents.OptionVerifyToken(&slackevents.TokenComparator{string(token)}))
+		eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage([]byte(event.Data)), slackevents.OptionVerifyToken(&slackevents.TokenComparator{string(token)}))
+		fmt.Printf("eventsAPIEvent: %+v\n", eventsAPIEvent)
 		if e != nil {
 			// w.WriteHeader(http.StatusInternalServerError)
 		}

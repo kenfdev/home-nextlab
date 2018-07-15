@@ -7,5 +7,7 @@ functions:
     lang: go-wg-armhf
     handler: ./slack-echo
     image: kenfdev/home-nextlab:slack-echo-0.1.0
+    environment:
+      write_debug: true
     secrets:
       - bot-user-oauth-access-token

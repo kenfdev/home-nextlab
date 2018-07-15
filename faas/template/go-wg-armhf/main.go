@@ -20,4 +20,3 @@ func main() {
 	fmt.Println(function.Handle(input, &wg))
 	wg.Wait()
 }
-
