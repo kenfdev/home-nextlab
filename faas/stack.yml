@@ -3,6 +3,14 @@ provider:
   gateway: http://127.0.0.1:8080
 
 functions:
+  slack-event-sub:
+    lang: go-wg-armhf
+    handler: ./slack-event-sub
+    image: kenfdev/home-nextlab:slack-event-sub-0.1.0
+    environment:
+      write_debug: true
+    secrets:
+      - bot-user-oauth-access-token
   slack-echo:
     lang: go-wg-armhf
     handler: ./slack-echo

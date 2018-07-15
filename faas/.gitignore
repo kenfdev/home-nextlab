@@ -1,3 +1,5 @@
 template/*
 !template/go-wg-armhf
 build
+
+template
