@@ -22,13 +22,23 @@ func getAPISecret(secretName string) (secretBytes []byte, err error) {
 }
 
 type CloudEvent struct {
-	EventType          string `json:"eventType"`
-	EventID            string `json:"eventID"`
-	CloudEventsVersion string `json:"cloudEventsVersion"`
-	Source             string `json:"source"`
-	EventTime          string `json:"eventTime"`
-	Data               string `json:"data"`
-	ContentType        string `json:"contentType"`
+	EventType          string            `json:"eventType"`
+	EventID            string            `json:"eventID"`
+	CloudEventsVersion string            `json:"cloudEventsVersion"`
+	Source             string            `json:"source"`
+	EventTime          string            `json:"eventTime"`
+	Data               *HTTPRequestEvent `json:"data"`
+	ContentType        string            `json:"contentType"`
+}
+
+type HTTPRequestEvent struct {
+	Path    string                 `json:"path"`
+	Method  string                 `json:"method"`
+	Headers map[string]string      `json:"headers"`
+	Host    string                 `json:"host"`
+	Query   map[string]string      `json:"query"`
+	Params  map[string]string      `json:"params"`
+	Body    map[string]interface{} `json:"body"`
 }
 
 // Handle a serverless request
@@ -47,7 +57,9 @@ func Handle(req []byte, wg *sync.WaitGroup) string {
 	go func() {
 
 		defer wg.Done()
-		eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage([]byte(event.Data)), slackevents.OptionVerifyToken(&slackevents.TokenComparator{string(token)}))
+
+		body, _ := json.Marshal(event.Data)
+		eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionVerifyToken(&slackevents.TokenComparator{string(token)}))
 		fmt.Printf("eventsAPIEvent: %+v\n", eventsAPIEvent)
 		if e != nil {
 			// w.WriteHeader(http.StatusInternalServerError)
