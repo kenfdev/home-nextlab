@@ -4,6 +4,11 @@ const fs = require('fs');
 const { WebClient } = require('@slack/client');
 
 module.exports = (context, callback) => {
+  callback(undefined, {
+    headers: { 'Content-Type': 'text/plain' },
+    body: 'success'
+  });
+
   const oAuthToken = fs
     .readFileSync(`/run/secrets/bot-user-oauth-access-token`)
     .toString();
@@ -16,20 +21,15 @@ module.exports = (context, callback) => {
   } = JSON.parse(context);
 
   if (body.token !== verifyToken) {
-    callback(undefined, {
-      statusCode: 400,
-      headers: {
-        'Content-Type': 'text/plain'
-      },
-      body: 'Token Invalid'
-    });
-    return;
+    // callback(undefined, {
+    //   statusCode: 400,
+    //   headers: {
+    //     'Content-Type': 'text/plain'
+    //   },
+    //   body: 'Token Invalid'
+    // });
+    // return;
   }
-
-  callback(undefined, {
-    headers: { 'Content-Type': 'text/plain' },
-    body: 'success'
-  });
 
   const web = new WebClient(oAuthToken);
   web.chat
