@@ -32,13 +32,13 @@ type CloudEvent struct {
 }
 
 type HTTPRequestEvent struct {
-	Path    string                 `json:"path"`
-	Method  string                 `json:"method"`
-	Headers map[string]string      `json:"headers"`
-	Host    string                 `json:"host"`
-	Query   map[string]string      `json:"query"`
-	Params  map[string]string      `json:"params"`
-	Body    map[string]interface{} `json:"body"`
+	Path    string            `json:"path"`
+	Method  string            `json:"method"`
+	Headers map[string]string `json:"headers"`
+	Host    string            `json:"host"`
+	Query   map[string]string `json:"query"`
+	Params  map[string]string `json:"params"`
+	Body    string            `json:"body"`
 }
 
 // Handle a serverless request
@@ -58,8 +58,7 @@ func Handle(req []byte, wg *sync.WaitGroup) string {
 
 		defer wg.Done()
 
-		body, _ := json.Marshal(event.Data)
-		eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionVerifyToken(&slackevents.TokenComparator{string(token)}))
+		eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage([]byte(event.Data.Body)), slackevents.OptionVerifyToken(&slackevents.TokenComparator{string(token)}))
 		fmt.Printf("eventsAPIEvent: %+v\n", eventsAPIEvent)
 		if e != nil {
 			// w.WriteHeader(http.StatusInternalServerError)
