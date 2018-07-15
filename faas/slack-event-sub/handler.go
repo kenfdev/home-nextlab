@@ -69,7 +69,7 @@ func Handle(req []byte, wg *sync.WaitGroup) string {
 			panic(err)
 		}
 
-		return fmt.Sprintf(`{"headers": {"Content-Type": "text"}, "body": "%s"}`, r.Challenge)
+		return fmt.Sprintf(`{"headers": {"Content-Type": "text/plain"}, "body": "%s"}`, r.Challenge)
 	}
 
 	wg.Add(1)
