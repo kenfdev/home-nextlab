@@ -1,9 +1,12 @@
 package function
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"net/http"
+	"os"
 	"sync"
 
 	"github.com/nlopes/slack"
@@ -39,6 +42,31 @@ type HTTPRequestEvent struct {
 	Query   map[string]string      `json:"query"`
 	Params  map[string]string      `json:"params"`
 	Body    map[string]interface{} `json:"body"`
+}
+
+type GoogleHomeFunctionPayload struct {
+	Text     string `json:"text"`
+	Language string `json:"language"`
+}
+
+func invokeGoogleHomeFunction(url string, text string) error {
+	payload := &GoogleHomeFunctionPayload{
+		Text:     text,
+		Language: "ja",
+	}
+
+	jsonValue, err := json.Marshal(payload)
+	if err != nil {
+		return err
+	}
+
+	_, err = http.Post(url, "application/json", bytes.NewBuffer(jsonValue))
+	if err != nil {
+		return err
+	}
+
+	return nil
+
 }
 
 // Handle a serverless request
@@ -79,7 +107,12 @@ func Handle(req []byte, wg *sync.WaitGroup) string {
 			innerEvent := eventsAPIEvent.InnerEvent
 			switch ev := innerEvent.Data.(type) {
 			case *slackevents.AppMentionEvent:
-				api.PostMessage(ev.Channel, "Yes, hello.", postParams)
+				ghnURL := os.Getenv("GOOGLE_HOME_NOTIFIER_FUNC_URL")
+				err := invokeGoogleHomeFunction(ghnURL, ev.Text)
+				if err != nil {
+					panic(err)
+				}
+				api.PostMessage(ev.Channel, "The message has been sent", postParams)
 			}
 		}
 

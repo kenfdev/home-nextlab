@@ -1,9 +1,0 @@
-provider:
-  name: faas
-  gateway: http://127.0.0.1:8080
-
-functions:
-  google-home-notifier:
-    lang: go-wg-armhf
-    handler: ./google-home-notifier
-    image: google-home-notifier
