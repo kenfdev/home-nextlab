@@ -10,6 +10,7 @@ module.exports = (context, callback) => {
 
   const { data } = JSON.parse(context);
   const body = Buffer.from(data.body, 'base64');
+  console.error('body', body);
 
   const query = body.queryResult.queryText;
   const web = new WebClient(oAuthToken);
