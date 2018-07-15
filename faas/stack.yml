@@ -22,3 +22,13 @@ functions:
     secrets:
       - bot-user-oauth-access-token
       - slack-verify-token
+  df-to-slack:
+    lang: node-armhf
+    handler: ./df-to-slack
+    image: kenfdev/home-nextlab:df-to-slack-0.1.0
+    environment:
+      write_debug: true
+      combine_output: false
+    secrets:
+      - bot-user-oauth-access-token
+      - slack-verify-token
