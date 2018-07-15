@@ -17,9 +17,8 @@ module.exports = (context, callback) => {
     .readFileSync(`/run/secrets/slack-verify-token`)
     .toString();
 
-  const {
-    data: { body }
-  } = JSON.parse(context);
+  const { data } = JSON.parse(context);
+  const { body } = data;
 
   if (
     data.headers['X-Slack-Retry-Num'] &&
