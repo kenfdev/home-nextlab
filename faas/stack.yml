@@ -6,7 +6,7 @@ functions:
   google-home-notifier:
     lang: go-wg-armhf
     handler: ./google-home-notifier
-    image: google-home-notifier
+    image: kenfdev/home-nextlab:google-home-notifier-0.1.0
     environment:
       write_debug: true
   slack-event-sub:
