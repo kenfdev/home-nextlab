@@ -1,38 +1,49 @@
 package function
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
-	"net/http"
+	"io/ioutil"
 	"sync"
 
 	"github.com/nlopes/slack"
 	"github.com/nlopes/slack/slackevents"
 )
 
+func getAPISecret(secretName string) (secretBytes []byte, err error) {
+	// read from the openfaas secrets folder
+	secretBytes, err = ioutil.ReadFile("/var/openfaas/secrets/" + secretName)
+	if err != nil {
+		// read from the original location for backwards compatibility with openfaas <= 0.8.2
+		secretBytes, err = ioutil.ReadFile("/run/secrets/" + secretName)
+	}
+
+	return secretBytes, err
+}
+
 // Handle a serverless request
 func Handle(req []byte, wg *sync.WaitGroup) string {
+	token, _ := getAPISecret("bot-user-oauth-access-token")
+
+	api := slack.New(string(token))
+
 	wg.Add(1)
 	go func() {
 
 		defer wg.Done()
-		buf := new(bytes.Buffer)
-		buf.ReadFrom(r.Body)
-		body := buf.String()
-		eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage(body), slackevents.OptionVerifyToken(&slackevents.TokenComparator{"336yH99VTXfqFV7yW0i92Teh"}))
+		eventsAPIEvent, e := slackevents.ParseEvent(json.RawMessage(req), slackevents.OptionVerifyToken(&slackevents.TokenComparator{string(token)}))
 		if e != nil {
-			w.WriteHeader(http.StatusInternalServerError)
+			// w.WriteHeader(http.StatusInternalServerError)
 		}
 
 		if eventsAPIEvent.Type == slackevents.URLVerification {
 			var r *slackevents.ChallengeResponse
-			err := json.Unmarshal([]byte(body), &r)
+			err := json.Unmarshal([]byte(req), &r)
 			if err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
+				// w.WriteHeader(http.StatusInternalServerError)
 			}
-			w.Header().Set("Content-Type", "text")
-			w.Write([]byte(r.Challenge))
+			// w.Header().Set("Content-Type", "text")
+			// w.Write([]byte(r.Challenge))
 		}
 		if eventsAPIEvent.Type == slackevents.CallbackEvent {
 			postParams := slack.PostMessageParameters{}
