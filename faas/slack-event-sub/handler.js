@@ -40,7 +40,9 @@ module.exports = (context, callback) => {
   }
 
   const url = process.env.GOOGLE_HOME_NOTIFIER_FUNC_URL;
-  request.post(url, { text: body.event.text, language: 'ja' }, (err, resp) => {
+  const payload = { text: body.event.text, language: 'ja' };
+  console.error('payload:', payload);
+  request.post(url, { json: payload }, (err, resp) => {
     let msg = 'success';
     if (err) {
       msg = 'Error sending message.';
