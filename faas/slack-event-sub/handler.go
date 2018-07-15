@@ -45,6 +45,8 @@ type HTTPRequestEvent struct {
 func Handle(req []byte, wg *sync.WaitGroup) string {
 	oauthToken, _ := getAPISecret("bot-user-oauth-access-token")
 	verifyToken, _ := getAPISecret("slack-verify-token")
+	fmt.Printf("oauthtoken: %s", string(oauthToken))
+	fmt.Printf("verifyToken: %s", string(verifyToken))
 	var api = slack.New(string(oauthToken))
 
 	var event CloudEvent
