@@ -74,7 +74,6 @@ func Handle(req []byte, wg *sync.WaitGroup) string {
 
 		defer wg.Done()
 
-		fmt.Printf("eventAPIEvent: %+v\n", eventsAPIEvent)
 		if eventsAPIEvent.Type == slackevents.CallbackEvent {
 			postParams := slack.PostMessageParameters{}
 			innerEvent := eventsAPIEvent.InnerEvent
