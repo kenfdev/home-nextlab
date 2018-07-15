@@ -20,6 +20,11 @@ module.exports = (context, callback) => {
     data: { body }
   } = JSON.parse(context);
 
+  if (data.headers["X-Slack-Retry-Num"] && data.headers["X-Slack-Retry-Reason"] === "http_timeout") {
+      // Do nothing if it's a retry.
+      return;
+  }
+
   if (body.token !== verifyToken) {
     // callback(undefined, {
     //   statusCode: 400,
