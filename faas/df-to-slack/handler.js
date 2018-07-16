@@ -37,7 +37,7 @@ module.exports = (context, callback) => {
   const query = body.queryResult.queryText;
   const web = new WebClient(oAuthToken);
   web.chat
-    .postMessage({ channel: 'C994KQKG9', text: query })
+    .postMessage({ channel: 'C994KQKG9', text: `メッセージを受信したよ：${query}` })
     .then(res => {
       // `res` contains information about the posted message
       console.error('Message sent: ', res.ts);
