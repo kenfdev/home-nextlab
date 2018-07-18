@@ -34,10 +34,10 @@ module.exports = (context, callback) => {
   const body = JSON.parse(Buffer.from(data.body, 'base64'));
   console.error('body', body);
 
-  const query = body.queryResult.queryText;
+  const message = body.queryResult.outputContexts[0].parameters.message;
   const web = new WebClient(oAuthToken);
   web.chat
-    .postMessage({ channel: 'C994KQKG9', text: `メッセージを受信したよ：${query}` })
+    .postMessage({ channel: 'C994KQKG9', text: `メッセージを受信したよ：${message}` })
     .then(res => {
       // `res` contains information about the posted message
       console.error('Message sent: ', res.ts);
