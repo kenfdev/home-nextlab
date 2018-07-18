@@ -8,7 +8,7 @@ functions:
     handler: ./google-home-notifier
     image: kenfdev/home-nextlab:google-home-notifier-0.1.0
     environment:
-      write_debug: true
+      # write_debug: true
       combine_output: false
       GOOGLE_HOME_HOST: 192.168.100.4
   slack-event-sub:
@@ -16,7 +16,7 @@ functions:
     handler: ./slack-event-sub
     image: kenfdev/home-nextlab:slack-event-sub-0.1.0
     environment:
-      write_debug: true
+      # write_debug: true
       combine_output: false
       GOOGLE_HOME_NOTIFIER_FUNC_URL: http://gateway:8080/function/google-home-notifier
     secrets:
@@ -27,7 +27,7 @@ functions:
     handler: ./df-to-slack
     image: kenfdev/home-nextlab:df-to-slack-0.1.0
     environment:
-      write_debug: true
+      # write_debug: true
       combine_output: false
     secrets:
       - bot-user-oauth-access-token
