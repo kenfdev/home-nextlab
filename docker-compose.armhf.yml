@@ -185,6 +185,14 @@ services:
         configs:
             - source: alertmanager_config
               target: /alertmanager.yml
+    remo-exporter:
+      ports:
+        - 9470:9470
+      image: kenfdev/remo-exporter:latest-armhf
+      environment:
+        - OAUTH_TOKEN=put-your-token-here
+      env_file:
+        - ./.env
 
 
 configs:
