@@ -160,6 +160,13 @@ services:
                 reservations:
                     memory: 200M
 
+    grafana:
+        image: raymondmm/grafana:5.2.1-slim-arm32v7
+        ports:
+            - "3000:3000"
+        networks:
+            - functions
+
     alertmanager:
         image: alexellis2/alertmanager-armhf:0.5.1
         environment:
@@ -189,8 +196,6 @@ services:
         ports:
             - 9470:9470
         image: kenfdev/remo-exporter:latest-armhf
-        environment:
-            - OAUTH_TOKEN=put-your-token-here
         env_file:
             - ./.env
         networks:
